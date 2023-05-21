@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8" />
+			<title>Productos</title>
+		</head>
+	<body>
+		<h3>
+			Lista de Productos:
+		</h3>
+		<ul id="products">
+		</ul><br/>
+		<h3>
+			Insertar Producto:
+		</h3>
+		<form id="post">
+			<label>
+				Nombre del producto:
+			</label>
+			<input type="text" name="name" /><br/>
+			<label>
+				Descripción del producto:
+			</label>
+			<input type="text" name="description" /><br/>
+			<label>
+				Precio del producto:
+			</label>
+			<input type="text" name="price" /><br/>
+			<button type="submit" >
+				INSERTAR
+			</button>
+		</form><br/>
+		<h3>
+			Editar Producto:
+		</h3>
+		<form id="put">
+			<label>
+				ID del producto:
+			</label>
+			<input type="text" name="id" /><br/>
+			<label>
+				Nombre del producto:
+			</label>
+			<input type="text" name="name" /><br/>
+			<label>
+				Descripción del producto:
+			</label>
+			<input type="text" name="description" /><br/>
+			<label>
+				Precio del producto:
+			</label>
+			<input type="text" name="price" /><br/>
+			<button type="submit" >
+				EDITAR
+			</button>
+		</form><br/>
+		<h3>
+			Eliminar Producto:
+		</h3>
+		<form id="put">
+			<label>
+				ID del producto:
+			</label>
+			<input type="text" name="id" /><br/>
+			<button type="submit" >
+				ELIMINAR
+			</button>
+		</form><br/>
+		<script>
+			async function getProducts(){
+				try{
+					let res = await fetch("http://127.0.0.1:3000/products",{
+						method: "GET",
+						mode: "cors",
+						headers: {
+							"Access-Control-Allow-Origin": "*"
+						}
+					});
+					let data = JSON.parse(await res.json());
+					let products = document.getElementById("products");
+					for(let i = 0; i < data.length; i++){
+						let li = document.createElement("li");
+						li.innerText = data[i].name + " " + data[i].description + " " + data[i].price + "$";
+						products.appendChild(li);
+					}
+				}catch(e){
+					console.log("ERROR:", e);
+					return -1;
+				}
+			};
+			async function postProducts(event){
+				try{
+					event.preventDefault();
+					let formData = new FormData(event.currentTarget);
+					let res = await fetch("http://127.0.0.1:3000/products",{
+						method: "POST",
+						mode: "cors",
+						headers: {
+							"Access-Control-Allow-Origin": "*",
+						},
+						body: formData
+					});
+					return 0;
+				}catch(e){
+					console.log("ERROR:", e);
+					return -1;
+				}
+			};
+			async function putProducts(event){
+				try{
+					event.preventDefault();
+					let formData = new FormData(event.currentTarget);
+					let res = await fetch("http://127.0.0.1:3000/products",{
+						method: "PUT",
+						mode: "cors",
+						headers: {
+							"Access-Control-Allow-Origin": "*",
+						},
+						body: formData
+					});
+					return 0;
+				}catch(e){
+					console.log("ERROR:", e);
+					return -1;
+				}
+			};
+			async function deleteProducts(event){
+				try{
+					event.preventDefault();
+					let formData = new FormData(event.currentTarget);
+					let res = await fetch("http://127.0.0.1:3000/products",{
+						method: "DELETE",
+						mode: "cors",
+						headers: {
+							"Access-Control-Allow-Origin": "*",
+						},
+						body: formData
+					});
+					return 0;
+				}catch(e){
+					console.log("ERROR:", e);
+					return -1;
+				}
+			};
+			getProducts();
+			let insertForm = document.getElementById("post");
+			let updateForm = document.getElementById("put");
+			let deleteForm = document.getElementById("delete");
+			insertForm.addEventListener("submit", postProducts);
+			updateForm.addEventListener("submit", putProducts);
+			deleteForm.addEventListener("submit", deleteProducts);
+		</script>
+	</body>
+</html>
